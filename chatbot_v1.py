@@ -7,20 +7,21 @@ from langchain.memory import ConversationBufferMemory
 from langchain.document_loaders.csv_loader import CSVLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
-
+import pickle
+import requests
 # llm
-llm = LlamaCpp(model_path = "/Users/MarwanRadi1/Bootcamp_Projects/06_LLM/mistral-7b-instruct-v0.1.Q4_K_M.gguf",
-               max_tokens = 2000,
-               temperature = 0.1,
-               top_p = 1,
-               n_gpu_layers = -1,
-               n_ctx = 2048)
+#llm = LlamaCpp(model_path = "/Users/MarwanRadi1/Bootcamp_Projects/06_LLM/mistral-7b-instruct-v0.1.Q4_K_M.gguf",
+##               max_tokens = 2000,
+ ##              temperature = 0.1,
+ #              top_p = 1,
+#               n_gpu_layers = -1,
+ #              n_ctx = 2048)
 
 # embeddings
-embedding_model = "sentence-transformers/all-MiniLM-l6-v2"
-embeddings_folder = "/Users/MarwanRadi1/Bootcamp_Projects/06_LLM/"
-embeddings = HuggingFaceEmbeddings(model_name=embedding_model,
-                                   cache_folder=embeddings_folder)
+#embedding_model = "sentence-transformers/all-MiniLM-l6-v2"
+#embeddings_folder = "/Users/MarwanRadi1/Bootcamp_Projects/06_LLM/"
+#embeddings = HuggingFaceEmbeddings(model_name=embedding_model,
+ #                                  cache_folder=embeddings_folder)
 
 
 
@@ -42,8 +43,49 @@ embeddings = HuggingFaceEmbeddings(model_name=embedding_model,
 
 ## load vector Database
 ## allow_dangerous_deserialization is needed. Pickle files can be modified to deliver a malicious payload that results in execution of arbitrary code on your machine
-vector_db = FAISS.load_local("/Users/MarwanRadi1/Bootcamp_Projects/06_LLM/faiss_index_pdf",
-                             embeddings, allow_dangerous_deserialization=True)
+#vector_db = FAISS.load_local("/Users/MarwanRadi1/Bootcamp_Projects/06_LLM/faiss_index_pdf",
+#                             embeddings, allow_dangerous_deserialization=True)
+
+
+
+
+# load model
+import requests
+import pickle
+
+# Specify the release tag/version where your file is uploaded
+release_tag = 'vectored_pdf'  # Replace 'v1.0' with the appropriate tag/version
+
+# URL to download the file from the release
+
+file_url = f'https://github.com/Marwan-2024/automation_expert_chatbot/releases/download/{release_tag}/vectored_pdf_automation_chapter.sav'
+
+# Download the file
+response = requests.get(file_url)
+
+# Check if the download was successful
+if response.status_code == 200:
+    # Open the downloaded file
+    with open('vectored_pdf_automation_chapter.sav', 'wb') as f:
+        # Write the content of the downloaded file to the local file
+        f.write(response.content)
+        
+    # Load the vectored file
+    vector_db = pickle.load(open('vectored_pdf_automation_chapter.sav', 'rb'))
+    print("Vectored file loaded successfully.")
+else:
+    print("Failed to download the file from the release.")
+
+
+new_house = pd.DataFrame({
+    'LotArea':[9000],
+    'TotalBsmtSF':[1000],
+    'BedroomAbvGr':[5],
+    'GarageCars':[4]
+})
+
+# prediction
+loaded_model.predict(new_house)
 
 # retriever
 retriever = vector_db.as_retriever(search_kwargs={"k": 2})

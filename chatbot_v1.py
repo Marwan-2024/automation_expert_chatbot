@@ -4,18 +4,27 @@ from langchain.chains import ConversationalRetrievalChain
 import pickle
 import requests
 import streamlit as st
+from transformers import AutoModel
 
 # llm
-@st.cache_resource
+@st.cache(allow_output_mutation=True)
 def init_llm():
-  return LlamaCpp(model_path = "/content/mistral-7b-instruct-v0.1.Q4_K_M.gguf",
-                  max_tokens = 2000,
-                  temperature = 0.1,
-                  top_p = 1,
-                  n_gpu_layers = -1,
-                  n_ctx = 1024)
-llm = init_llm()
+    # Download the model from Hugging Face's model hub
+    model_name = "TheBloke/Mistral-7B-Instruct-v0.1-GGUF"
+    model = AutoModel.from_pretrained(model_name)
+    
+    # Initialize the LlamaCpp model with the appropriate parameters
+    return LlamaCpp(
+        model=model,
+        max_tokens=2000,
+        temperature=0.1,
+        top_p=1,
+        n_gpu_layers=-1,
+        n_ctx=1024
+    )
 
+# Initialize the LlamaCpp model
+llm = init_llm()
 
 # llm
 #llm = LlamaCpp(model_path = "/Users/MarwanRadi1/Bootcamp_Projects/06_LLM/mistral-7b-instruct-v0.1.Q4_K_M.gguf",

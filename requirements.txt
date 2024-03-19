@@ -1,3 +1,4 @@
 langchain==0.1.12
 streamlit==1.30.0
 langchain-community==0.0.28
+llama-cpp-python

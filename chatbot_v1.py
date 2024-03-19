@@ -49,10 +49,7 @@ import requests
 
 
 
-# load model
-import requests
-import pickle
-
+# load vectored file
 # Specify the release tag/version where your file is uploaded
 release_tag = 'vectored_pdf'  # Replace 'v1.0' with the appropriate tag/version
 
@@ -76,16 +73,6 @@ if response.status_code == 200:
 else:
     print("Failed to download the file from the release.")
 
-
-new_house = pd.DataFrame({
-    'LotArea':[9000],
-    'TotalBsmtSF':[1000],
-    'BedroomAbvGr':[5],
-    'GarageCars':[4]
-})
-
-# prediction
-loaded_model.predict(new_house)
 
 # retriever
 retriever = vector_db.as_retriever(search_kwargs={"k": 2})

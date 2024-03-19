@@ -10,7 +10,7 @@ from transformers import AutoModel
 @st.cache(allow_output_mutation=True)
 def init_llm():
     # Download the model from Hugging Face's model hub
-    model_name = "TheBloke/Mistral-7B-Instruct-v0.1-GGUF"
+    model_name = "sentence-transformers/all-MiniLM-l6-v2"
     model = AutoModel.from_pretrained(model_name)
     
     # Initialize the LlamaCpp model with the appropriate parameters

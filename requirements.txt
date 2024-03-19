@@ -1,8 +1,2 @@
-numpy==1.26.4
-pandas==2.1.4
-torch==2.2.1
-ipywidgets==7.6.5
-xarray==2023.6.0
 langchain
 streamlit
-langchain-community

@@ -3,6 +3,7 @@ from langchain import PromptTemplate
 from langchain.chains import ConversationalRetrievalChain
 import pickle
 import requests
+import streamlit as st
 
 # llm
 @st.cache_resource

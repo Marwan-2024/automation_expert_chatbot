@@ -1,12 +1,6 @@
 from langchain.llms import LlamaCpp
-from langchain.vectorstores import FAISS
 from langchain import PromptTemplate
 from langchain.chains import ConversationalRetrievalChain
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.memory import ConversationBufferMemory
-from langchain.document_loaders.csv_loader import CSVLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.document_loaders import PyPDFLoader
 import pickle
 import requests
 

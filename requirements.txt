@@ -4,3 +4,4 @@ torch==2.2.1
 ipywidgets==7.6.5
 xarray==2023.6.0
 langchain
+streamlit

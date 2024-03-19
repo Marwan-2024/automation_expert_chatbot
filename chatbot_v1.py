@@ -9,6 +9,19 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
 import pickle
 import requests
+
+# llm
+@st.cache_resource
+def init_llm():
+  return LlamaCpp(model_path = "/content/mistral-7b-instruct-v0.1.Q4_K_M.gguf",
+                  max_tokens = 2000,
+                  temperature = 0.1,
+                  top_p = 1,
+                  n_gpu_layers = -1,
+                  n_ctx = 1024)
+llm = init_llm()
+
+
 # llm
 #llm = LlamaCpp(model_path = "/Users/MarwanRadi1/Bootcamp_Projects/06_LLM/mistral-7b-instruct-v0.1.Q4_K_M.gguf",
 ##               max_tokens = 2000,
@@ -78,9 +91,14 @@ else:
 retriever = vector_db.as_retriever(search_kwargs={"k": 2})
 
 # memory
-memory = ConversationBufferMemory(memory_key='chat_history',
-                                  return_messages=True,
-                                  output_key='answer')
+@st.cache_resource
+def init_memory(_llm):
+    return ConversationBufferMemory(
+        llm=llm,
+        output_key='answer',
+        memory_key='chat_history',
+        return_messages=True)
+memory = init_memory(llm)
 
 # prompt
 template = """
@@ -119,3 +137,43 @@ chain = ConversationalRetrievalChain.from_llm(llm,
                                               memory=memory,
                                               return_source_documents=True,
                                               combine_docs_chain_kwargs={"prompt": prompt})
+
+
+##### streamlit #####
+
+st.title("Your Supporter in the Automation World")
+
+# Initialise chat history
+# Chat history saves the previous messages to be displayed
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display chat messages from history on app rerun
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# React to user input
+if prompt := st.chat_input("Curious minds wanted!"):
+
+    # Display user message in chat message container
+    st.chat_message("user").markdown(prompt)
+
+    # Add user message to chat history
+    st.session_state.messages.append({"role": "user", "content": prompt})
+
+    # Begin spinner before answering question so it's there for the duration
+    with st.spinner("Going down the rabbithole for answers..."):
+
+        # send question to chain to get answer
+        answer = chain(prompt)
+
+        # extract answer from dictionary returned by chain
+        response = answer["answer"]
+
+        # Display chatbot response in chat message container
+        with st.chat_message("assistant"):
+            st.markdown(answer["answer"])
+
+        # Add assistant response to chat history
+        st.session_state.messages.append({"role": "assistant", "content": response})

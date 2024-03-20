@@ -4,3 +4,4 @@ langchain-community==0.0.28
 llama-cpp-python
 transformers==4.38.2
 torch==2.2.1
+pydrive

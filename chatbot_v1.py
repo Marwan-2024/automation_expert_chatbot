@@ -6,25 +6,39 @@ import requests
 import streamlit as st
 from transformers import AutoModel
 
+
+
 # llm
-@st.cache(allow_output_mutation=True)
+@st.cache_resource
 def init_llm():
-    # Download the model from Hugging Face's model hub
-    model_name = "sentence-transformers/all-MiniLM-l6-v2"
-    model = AutoModel.from_pretrained(model_name)
-    
-    # Initialize the LlamaCpp model with the appropriate parameters
-    return LlamaCpp(
-        model=model,
-        max_tokens=2000,
-        temperature=0.1,
-        top_p=1,
-        n_gpu_layers=-1,
-        n_ctx=1024
-    )
+  return LlamaCpp(model_path = "https://drive.google.com/file/d/1615n1Wd1dFmglcTj8l9O3091mEOm80mC/view?usp=sharing",
+                  max_tokens = 2000,
+                  temperature = 0.1,
+                  top_p = 1,
+                  n_gpu_layers = -1,
+                  n_ctx = 1024)
+llm = init_llm()
+
+
+# llm
+#@st.cache(allow_output_mutation=True)
+#def init_llm():
+#    # Download the model from Hugging Face's model hub
+#    model_name = "sentence-transformers/all-MiniLM-l6-v2"
+#    model = AutoModel.from_pretrained(model_name)
+#    
+#    # Initialize the LlamaCpp model with the appropriate parameters
+#    return LlamaCpp(
+#        model=model,
+#        max_tokens=2000,
+#        temperature=0.1,
+#        top_p=1,
+#        n_gpu_layers=-1,
+#        n_ctx=1024
+#    )
 
 # Initialize the LlamaCpp model
-llm = init_llm()
+#llm = init_llm()
 
 # llm
 #llm = LlamaCpp(model_path = "/Users/MarwanRadi1/Bootcamp_Projects/06_LLM/mistral-7b-instruct-v0.1.Q4_K_M.gguf",

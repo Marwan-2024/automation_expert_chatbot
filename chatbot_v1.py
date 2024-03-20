@@ -5,13 +5,24 @@ import pickle
 import requests
 import streamlit as st
 from transformers import AutoModel
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 
+# Authenticate with Google Drive
+gauth = GoogleAuth()
+gauth.LocalWebserverAuth()
+drive = GoogleDrive(gauth)
 
+# File ID of your model file on Google Drive
+file_id = '1615n1Wd1dFmglcTj8l9O3091mEOm80mC'
 
+# Download the model file
+model_file = drive.CreateFile({'id': file_id})
+downloaded_file.GetContentFile('mistral-7b-instruct-v0.1.Q4_K_M.gguf')  # Save the file locally
 # llm
 @st.cache_resource
 def init_llm():
-  return LlamaCpp(model_path = "https://drive.google.com/file/d/1615n1Wd1dFmglcTj8l9O3091mEOm80mC/view?usp=sharing",
+  return LlamaCpp(model_path = 'mistral-7b-instruct-v0.1.Q4_K_M.gguf',
                   max_tokens = 2000,
                   temperature = 0.1,
                   top_p = 1,
